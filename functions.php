@@ -679,3 +679,15 @@ function post_column_func_header($columns)
 
 	return $columns;
 }
+
+/**
+ * Limit the width of column tables.
+ * Adds CSS code to distributor_page_pull admin page.
+ */
+
+add_action('admin_print_styles-distributor_page_pull', function () {
+	echo '<style> .column-post_type { width: 100px !important; }</style>';
+	echo '<style> .column-date { width: 100px !important; }</style>';
+	echo '<style> .column-author { width: 120px !important; }</style>';
+	echo '<style> .column-tags { width: 120px !important; }</style>';
+});

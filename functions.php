@@ -644,18 +644,19 @@ function update_post_category_on_save($post_id, $post) {
  */
 add_action('save_post', 'update_post_category_on_save', 10, 2);
 
-function update_post_category_on_save($post_id, $post) {
-    // get the default category
-    $default_category = get_option('default_category');
-    $post_categories = wp_get_post_categories($post_id);
+function update_post_category_on_save($post_id, $post)
+{
+	// get the default category
+	$default_category = get_option('default_category');
+	$post_categories = wp_get_post_categories($post_id);
 
-    // check if post has meta key added by Distributor plugin
-    $distributor_meta_key = get_post_meta($post_id, 'dt_original_post_id', true);
+	// check if post has meta key added by Distributor plugin
+	$distributor_meta_key = get_post_meta($post_id, 'dt_original_post_id', true);
 
-    if ($distributor_meta_key && !in_array($default_category, $post_categories)) {
-        // assign the post to the default category
-        wp_set_post_categories($post_id, array($default_category));
-    }
+	if ($distributor_meta_key && !in_array($default_category, $post_categories)) {
+		// assign the post to the default category
+		wp_set_post_categories($post_id, array($default_category));
+	}
 }
 
 
@@ -691,3 +692,43 @@ add_action('admin_print_styles-distributor_page_pull', function () {
 	echo '<style> .column-author { width: 120px !important; }</style>';
 	echo '<style> .column-tags { width: 120px !important; }</style>';
 });
+
+/**
+ * Display category name for each post.
+ * 
+ */
+
+add_action('dt_pull_list_table_custom_column', 'dt_pull_post_cat_name', 10, 2);
+
+function dt_pull_post_cat_name($column_name, $item)
+{
+
+	if ($column_name == 'categories') {
+
+		if (isset($item->terms['category']) && is_array($item->terms['category'])) {
+			// initialize an empty string to store category names
+			$category_names = '';
+
+			// loop through each category and append to the string
+			foreach ($item->terms['category'] as $index => $category) {
+				$category_names .= $category['name'];
+
+				// add a comma if it's not the last category
+				if ($index < count($item->terms['category']) - 1) {
+					$category_names .= ', ';
+				}
+			}
+
+			// output the concatenated string
+			echo $category_names;
+		} else {
+			echo __('No categories found for this post.');
+		}
+
+		// echo '<pre>';
+		// var_dump($item);
+		// echo '</pre>';
+	}
+
+	return $item;
+}

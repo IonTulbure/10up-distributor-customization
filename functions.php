@@ -732,3 +732,27 @@ function dt_pull_post_cat_name($column_name, $item)
 
 	return $item;
 }
+
+/**
+ * Display author id for each post.
+ * 
+ */
+
+add_action('dt_pull_list_table_custom_column', 'dt_pull_post_author_id', 10, 2);
+
+function dt_pull_post_author_id($column_name, $item)
+{
+
+	if ($column_name == 'author') {
+
+		if ($item->post_author !== 0) {
+			$post_author_id = $item->post_author;
+
+			echo $post_author_id;
+		} else {
+			echo 'No author found for this post.';
+		}
+	}
+
+	return $item;
+}

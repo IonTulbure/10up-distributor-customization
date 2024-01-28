@@ -786,3 +786,29 @@ function dt_pull_post_tags($column_name, $item)
 
 	return $item;
 }
+
+/**
+ * Display post excerpt for each post.
+ * 
+ */
+
+add_action('dt_pull_list_table_custom_column', 'dt_pull_post_excerpt', 10, 2);
+
+function dt_pull_post_excerpt($column_name, $item)
+{
+
+	if ($column_name == 'post-excerpt') {
+
+		if (isset($item->post_excerpt)) {
+			// Access the 'post_excerpt' property
+			$post_excerpt = $item->post_excerpt;
+			
+			// Output or use $post_excerpt as needed
+			echo $post_excerpt;
+		} else {
+			echo 'No post excerpt found for this post.';
+		}
+	}
+
+	return $item;
+}

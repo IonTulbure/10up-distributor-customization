@@ -756,3 +756,33 @@ function dt_pull_post_author_id($column_name, $item)
 
 	return $item;
 }
+
+/**
+ * Display post tags for each post.
+ * 
+ */
+
+add_action('dt_pull_list_table_custom_column', 'dt_pull_post_tags', 10, 2);
+
+function dt_pull_post_tags($column_name, $item)
+{
+
+	if ($column_name == 'tags') {
+
+		// Check if the post_tag data exists and is an array
+		if (isset($item->terms['post_tag']) && is_array($item->terms['post_tag'])) {
+			// Loop through each term in post_tag
+			foreach ($item->terms['post_tag'] as $term) {
+				// Access the 'name' key for each term
+				$tag_name = $term['name'];
+
+				// Output or use $tag_name as needed
+				echo $tag_name;
+			}
+		} else {
+			echo 'No post tags found for this post.';
+		}
+	}
+
+	return $item;
+}

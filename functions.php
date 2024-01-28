@@ -657,3 +657,25 @@ function update_post_category_on_save($post_id, $post) {
         wp_set_post_categories($post_id, array($default_category));
     }
 }
+
+
+/**
+ * Filter pull posts column.
+ * Adds 4 new columns to the Pull post table.
+ * 
+ */
+
+add_filter('dt_pull_list_table_columns', 'post_column_func_header', 10, 1);
+
+function post_column_func_header($columns)
+{
+
+	if (is_array($columns) && !isset($columns['author'], $columns['tags'], $columns['categories'], $columns['post-excerpt'])) {
+		$columns['author'] = __('Author');
+		$columns['tags'] = __('Tags');
+		$columns['categories'] = __('Categories');
+		$columns['post-excerpt'] = __('Excerpt');
+	}
+
+	return $columns;
+}

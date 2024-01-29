@@ -747,7 +747,7 @@ function dt_pull_post_author_id($column_name, $item)
 
 		if ($item->post_author !== 0) {
 			$post_author_id = $item->post_author;
-
+			// display post author id
 			echo $post_author_id;
 		} else {
 			echo 'No author found for this post.';

@@ -724,10 +724,6 @@ function dt_pull_post_cat_name($column_name, $item)
 		} else {
 			echo __('No categories found for this post.');
 		}
-
-		// echo '<pre>';
-		// var_dump($item);
-		// echo '</pre>';
 	}
 
 	return $item;
@@ -769,18 +765,24 @@ function dt_pull_post_tags($column_name, $item)
 
 	if ($column_name == 'tags') {
 
-		// Check if the post_tag data exists and is an array
 		if (isset($item->terms['post_tag']) && is_array($item->terms['post_tag'])) {
-			// Loop through each term in post_tag
-			foreach ($item->terms['post_tag'] as $term) {
-				// Access the 'name' key for each term
-				$tag_name = $term['name'];
+			// initialize an empty string to store tag names
+			$tag_names = '';
 
-				// Output or use $tag_name as needed
-				echo $tag_name;
+			// loop through each tag and append to the string
+			foreach ($item->terms['post_tag'] as $index => $tag) {
+				$tag_names .= $tag['name'];
+
+				// add a comma if it's not the last tag
+				if ($index < count($item->terms['category']) - 1) {
+					$tag_names .= ', ';
+				}
 			}
+
+			// output the concatenated string
+			echo $tag_names;
 		} else {
-			echo 'No post tags found for this post.';
+			echo __('No tags found for this post.');
 		}
 	}
 
@@ -802,7 +804,7 @@ function dt_pull_post_excerpt($column_name, $item)
 		if (isset($item->post_excerpt)) {
 			// access the 'post_excerpt' of WP_Post object
 			$post_excerpt = $item->post_excerpt;
-			
+
 			// display post excerpt
 			echo $post_excerpt;
 		} else {

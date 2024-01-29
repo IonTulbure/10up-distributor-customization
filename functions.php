@@ -676,7 +676,8 @@ function post_column_func_header($columns)
 		$columns['tags'] = __('Tags');
 		$columns['categories'] = __('Categories');
 		$columns['post-excerpt'] = __('Excerpt');
-	}
+		$columns['date'] = __('Date & time');
+ 	}
 
 	return $columns;
 }

@@ -687,7 +687,7 @@ function post_column_func_header($columns)
 {
 
 	if (is_array($columns) && !isset($columns['date-time'], $columns['author'], $columns['tags'], $columns['categories'], $columns['post-excerpt'])) {
-		$columns['date-time'] = __('Date & time');
+		$columns['date-time'] = __('Date & Time');
 		$columns['author'] = __('Author (ID)');
 		$columns['tags'] = __('Tags');
 		$columns['categories'] = __('Categories');
@@ -708,6 +708,27 @@ add_action('admin_print_styles-distributor_page_pull', function () {
 	echo '<style> .column-author { width: 120px !important; }</style>';
 	echo '<style> .column-tags { width: 120px !important; }</style>';
 });
+
+/**
+ * Display date and time gmt for each post.
+ * 
+ */
+
+add_action('dt_pull_list_table_custom_column', 'dt_pull_post_publish_date_time_gmt', 10, 2);
+
+function dt_pull_post_publish_date_time_gmt($column_name, $item)
+{
+
+	if ($column_name == 'date-time') {
+		_e('Published:');
+
+		if (isset($item->post_date_gmt)) {
+			echo '<br>' . $item->post_date_gmt;
+		}
+	}
+
+	return $item;
+}
 
 /**
  * Display category name for each post.

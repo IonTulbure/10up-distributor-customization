@@ -800,10 +800,10 @@ function dt_pull_post_excerpt($column_name, $item)
 	if ($column_name == 'post-excerpt') {
 
 		if (isset($item->post_excerpt)) {
-			// Access the 'post_excerpt' property
+			// access the 'post_excerpt' of WP_Post object
 			$post_excerpt = $item->post_excerpt;
 			
-			// Output or use $post_excerpt as needed
+			// display post excerpt
 			echo $post_excerpt;
 		} else {
 			echo 'No post excerpt found for this post.';

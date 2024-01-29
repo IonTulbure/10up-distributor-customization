@@ -672,7 +672,7 @@ function post_column_func_header($columns)
 {
 
 	if (is_array($columns) && !isset($columns['author'], $columns['tags'], $columns['categories'], $columns['post-excerpt'])) {
-		$columns['author'] = __('Author');
+		$columns['author'] = __('Author (ID)');
 		$columns['tags'] = __('Tags');
 		$columns['categories'] = __('Categories');
 		$columns['post-excerpt'] = __('Excerpt');

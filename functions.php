@@ -686,12 +686,12 @@ add_filter('dt_pull_list_table_columns', 'post_column_func_header', 10, 1);
 function post_column_func_header($columns)
 {
 
-	if (is_array($columns) && !isset($columns['author'], $columns['tags'], $columns['categories'], $columns['post-excerpt'])) {
+	if (is_array($columns) && !isset($columns['date'], $columns['author'], $columns['tags'], $columns['categories'], $columns['post-excerpt'])) {
+		$columns['date'] = __('Date & time');
 		$columns['author'] = __('Author (ID)');
 		$columns['tags'] = __('Tags');
 		$columns['categories'] = __('Categories');
 		$columns['post-excerpt'] = __('Excerpt');
-		// $columns['date'] = __('Date & time');
 	}
 
 	return $columns;

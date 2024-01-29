@@ -659,6 +659,21 @@ function update_post_category_on_save($post_id, $post)
 	}
 }
 
+/**
+ * Unset default date column.
+ * 
+ */
+
+add_filter('dt_pull_list_table_columns', 'post_column_unset_columns', 10, 1);
+
+function post_column_unset_columns($columns)
+{
+	if (is_array($columns) && isset($columns['date'])) {
+		unset($columns['date']);
+	}
+
+	return $columns;
+}
 
 /**
  * Filter pull posts column.
@@ -676,8 +691,8 @@ function post_column_func_header($columns)
 		$columns['tags'] = __('Tags');
 		$columns['categories'] = __('Categories');
 		$columns['post-excerpt'] = __('Excerpt');
-		$columns['date'] = __('Date & time');
- 	}
+		// $columns['date'] = __('Date & time');
+	}
 
 	return $columns;
 }

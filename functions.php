@@ -767,30 +767,6 @@ function dt_pull_post_cat_name($column_name, $item)
 }
 
 /**
- * Display author id for each post.
- * 
- */
-
-add_action('dt_pull_list_table_custom_column', 'dt_pull_post_author_id', 10, 2);
-
-function dt_pull_post_author_id($column_name, $item)
-{
-
-	if ($column_name == 'author') {
-
-		if ($item->post_author !== 0) {
-			$post_author_id = $item->post_author;
-			// display post author id
-			echo $post_author_id;
-		} else {
-			echo 'No author found for this post.';
-		}
-	}
-
-	return $item;
-}
-
-/**
  * Display post tags for each post.
  * 
  */
@@ -850,4 +826,25 @@ function dt_pull_post_excerpt($column_name, $item)
 	}
 
 	return $item;
+}
+
+/**
+ * Add a custom meta key to the prepared meta using dt_prepared_meta filter.
+ * Meta key will store post author's nickname.
+ */
+
+add_filter('dt_prepared_meta', 'add_author_nickname_to_prepared_meta', 10, 2);
+
+function add_author_nickname_to_prepared_meta($prepared_meta, $post_id)
+{
+	// check if it's a post
+	if ($post_id && get_post_type($post_id) === 'post') {
+		// get author nickname based on post author ID
+		$author_nickname = get_the_author_meta('nickname', get_post_field('post_author', $post_id));
+
+		// add the custom meta key to the prepared meta array
+		$prepared_meta['author_nickname'] = $author_nickname;
+	}
+
+	return $prepared_meta;
 }

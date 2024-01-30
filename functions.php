@@ -767,6 +767,28 @@ function dt_pull_post_cat_name($column_name, $item)
 }
 
 /**
+ * Display author nickname for each post.
+ * 
+ */
+
+add_action('dt_pull_list_table_custom_column', 'dt_pull_post_author_nickname', 10, 2);
+
+function dt_pull_post_author_nickname($column_name, $item)
+{
+	if ($column_name == 'author') {
+		// check if the 'author_nickname' meta key exists in the item's meta data.
+		if (isset($item->meta['author_nickname'])) {
+			// output author nickname
+			echo '<br>' . $item->meta['author_nickname'];
+		} else {
+			echo 'No author found for this post.';
+		}
+	}
+
+	return $item;
+}
+
+/**
  * Display post tags for each post.
  * 
  */

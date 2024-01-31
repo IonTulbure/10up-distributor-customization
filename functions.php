@@ -739,19 +739,21 @@ add_action('dt_pull_list_table_custom_column', 'dt_pull_post_cat_name', 10, 2);
 
 function dt_pull_post_cat_name($column_name, $item)
 {
-
 	if ($column_name == 'categories') {
 
 		if (isset($item->terms['category']) && is_array($item->terms['category'])) {
 			// initialize an empty string to store category names
 			$category_names = '';
 
+			// get the total number of categories
+			$total_categories = count($item->terms['category']);
+
 			// loop through each category and append to the string
 			foreach ($item->terms['category'] as $index => $category) {
 				$category_names .= $category['name'];
 
 				// add a comma if it's not the last category
-				if ($index < count($item->terms['category']) - 1) {
+				if ($index < $total_categories - 1) {
 					$category_names .= ', ';
 				}
 			}
@@ -765,7 +767,6 @@ function dt_pull_post_cat_name($column_name, $item)
 
 	return $item;
 }
-
 /**
  * Display author nickname for each post.
  * 

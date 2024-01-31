@@ -797,19 +797,20 @@ add_action('dt_pull_list_table_custom_column', 'dt_pull_post_tags', 10, 2);
 
 function dt_pull_post_tags($column_name, $item)
 {
-
 	if ($column_name == 'tags') {
-
 		if (isset($item->terms['post_tag']) && is_array($item->terms['post_tag'])) {
 			// initialize an empty string to store tag names
 			$tag_names = '';
+
+			// get the total number of tags
+			$total_tags = count($item->terms['post_tag']);
 
 			// loop through each tag and append to the string
 			foreach ($item->terms['post_tag'] as $index => $tag) {
 				$tag_names .= $tag['name'];
 
 				// add a comma if it's not the last tag
-				if ($index < count($item->terms['category']) - 1) {
+				if ($index < $total_tags - 1) {
 					$tag_names .= ', ';
 				}
 			}

@@ -379,6 +379,7 @@ function dt_pull_post_cat_name($column_name, $item)
 
 	return $item;
 }
+
 /**
  * Display author nickname for each post.
  * 
@@ -392,7 +393,7 @@ function dt_pull_post_author_nickname($column_name, $item)
 		// check if the 'author_nickname' meta key exists in the item's meta data.
 		if (isset($item->meta['author_nickname'])) {
 			// output author nickname
-			echo '<br>' . $item->meta['author_nickname'];
+			echo $item->meta['author_nickname'];
 		} else {
 			echo 'No author found for this post.';
 		}

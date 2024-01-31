@@ -228,6 +228,9 @@ add_filter('https_ssl_verify', '__return_false');
  * @param mixed $post_id       Post ID
  * @return void
  */
+
+add_action('dt_after_set_meta', 'client_prefix_auto_unlink_distributed_posts', 10, 3);
+
 function client_prefix_auto_unlink_distributed_posts($meta, $existing_meta, $post_id)
 {
 	$post = get_post($post_id);
@@ -244,7 +247,6 @@ function client_prefix_auto_unlink_distributed_posts($meta, $existing_meta, $pos
 
 	update_post_meta($post->ID, 'dt_unlinked', true);
 }
-add_action('dt_after_set_meta', 'client_prefix_auto_unlink_distributed_posts', 10, 3);
 
 /**
  * Change post category on publishing.

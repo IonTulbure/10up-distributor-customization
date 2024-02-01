@@ -305,7 +305,7 @@ function post_column_unset_columns($columns)
 add_filter('dt_pull_list_table_columns', 'post_column_func_header', 10, 1);
 
 function post_column_func_header($columns)
-{	
+{
 	// initialize dt-post-name only for the status=pulled page
 	if (isset($_GET['page']) && $_GET['page'] === 'pull' && isset($_GET['status']) && $_GET['status'] === 'pulled') {
 		if (is_array($columns) && !isset($columns['dt-post-name'])) {
@@ -341,172 +341,173 @@ add_action('admin_print_styles-distributor_page_pull', function () {
 });
 
 /**
- * Display post type for each post.
+ * Remove published posts from pulled posts table.
  * 
  */
+add_action('admin_init', 'dt_pulled_posts_remove_published_posts');
 
-add_action('dt_pull_list_table_custom_column', 'dt_pull_post_dt_post_type', 10, 2);
-
-function dt_pull_post_dt_post_type($column_name, $item)
+function dt_pulled_posts_remove_published_posts()
 {
+	// check if it's the desired admin page
+	if (isset($_GET['page']) && $_GET['page'] === 'pull' && isset($_GET['status']) && $_GET['status'] === 'pulled') {
+		// load WordPress environment
+		include_once($_SERVER['DOCUMENT_ROOT'] . '/wp-load.php');
 
-	if ($column_name == 'dt-post-type') {
-		if (isset($item->post_type)) {
-			// display post_type name
-			echo ucwords($item->post_type);
-		} else {
-			_e('No post type found for this post.');
-		}
-	}
+		// include the necessary files for WP_List_Table
+		require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
 
-	return $item;
-}
+		// ensure that the Distributor\PullListTable class is defined
+		if (class_exists('Distributor\PullListTable')) {
 
-/**
- * Display date and time gmt for each post.
- * 
- */
+			// eefine the custom function for dt_pull_list_table_custom_column action
+			function dt_pull_post_data($column_name, $item)
+			{
+				global $wpdb;
 
-add_action('dt_pull_list_table_custom_column', 'dt_pull_post_publish_date_time_gmt', 10, 2);
+				// find new post ID via $wpdb
+				$new_post_id = $wpdb->get_var(
+					$wpdb->prepare(
+						"SELECT post_id FROM $wpdb->postmeta WHERE meta_key = 'dt_original_post_id' AND meta_value = %d",
+						$item->ID
+					)
+				);
 
-function dt_pull_post_publish_date_time_gmt($column_name, $item)
-{
+				// check if the new post ID is available
+				if ($new_post_id) {
+					// retrieve post data from wp_posts table for the new post
+					$new_post_data = get_post($new_post_id);
 
-	if ($column_name == 'date-time') {
-		_e('Published:');
+					// check if the post status is 'draft'
+					if ($new_post_data->post_status === 'draft') {
 
-		if (isset($item->post_date_gmt)) {
-			// display post date GMT
-			echo '<br>' . $item->post_date_gmt;
-		} else {
-			_e('No post date found for this post.');
-		}
-	}
+						// output for name column
+						if ($column_name === 'dt-post-name') {
+							// display post name
+							echo '<strong>Post Name:</strong> ' . esc_html($new_post_data->post_title) . '<br>';
 
-	return $item;
-}
+							// display link to edit post
+							$edit_post_link = get_edit_post_link($new_post_id);
+							echo '<strong>Edit Post:</strong> <a href="' . esc_url($edit_post_link) . '">Edit Post</a><br>';
 
-/**
- * Display category name for each post.
- * 
- */
+							// display link to view post
+							$view_post_link = get_permalink($new_post_id);
+							echo '<strong>View Post:</strong> <a href="' . esc_url($view_post_link) . '">View Post</a><br>';
+						}
 
-add_action('dt_pull_list_table_custom_column', 'dt_pull_post_cat_name', 10, 2);
+						// output for post type column
+						if ($column_name == 'dt-post-type') {
+							if (isset($item->post_type)) {
+								// display post_type name
+								echo ucwords($item->post_type);
+							} else {
+								_e('No post type found for this post.');
+							}
+						}
 
-function dt_pull_post_cat_name($column_name, $item)
-{
-	if ($column_name == 'categories') {
+						// output for date time column
+						if ($column_name == 'date-time') {
+							_e('Published:');
 
-		if (isset($item->terms['category']) && is_array($item->terms['category'])) {
-			// initialize an empty string to store category names
-			$category_names = '';
+							if (isset($item->post_date_gmt)) {
+								// display post date GMT
+								echo '<br>' . $item->post_date_gmt;
+							} else {
+								_e('No post date found for this post.');
+							}
+						}
 
-			// get the total number of categories
-			$total_categories = count($item->terms['category']);
+						// output for author column
+						if ($column_name == 'author') {
+							// check if the 'author_nickname' meta key exists in the item's meta data.
+							if (isset($item->meta['author_nickname'])) {
+								// output author nickname
+								echo $item->meta['author_nickname'];
+							} else {
+								echo 'No author found for this post.';
+							}
+						}
 
-			// loop through each category and append to the string
-			foreach ($item->terms['category'] as $index => $category) {
-				$category_names .= $category['name'];
+						// output for tags column
+						if ($column_name == 'tags') {
+							if (isset($item->terms['post_tag']) && is_array($item->terms['post_tag'])) {
+								// initialize an empty string to store tag names
+								$tag_names = '';
 
-				// add a comma if it's not the last category
-				if ($index < $total_categories - 1) {
-					$category_names .= ', ';
+								// get the total number of tags
+								$total_tags = count($item->terms['post_tag']);
+
+								// loop through each tag and append to the string
+								foreach ($item->terms['post_tag'] as $index => $tag) {
+									$tag_names .= $tag['name'];
+
+									// add a comma if it's not the last tag
+									if ($index < $total_tags - 1) {
+										$tag_names .= ', ';
+									}
+								}
+
+								// output the concatenated string
+								echo $tag_names;
+							} else {
+								echo __('No tags found for this post.');
+							}
+						}
+
+						// output for categories column
+						if ($column_name == 'categories') {
+
+							if (isset($item->terms['category']) && is_array($item->terms['category'])) {
+								// initialize an empty string to store category names
+								$category_names = '';
+
+								// get the total number of categories
+								$total_categories = count($item->terms['category']);
+
+								// loop through each category and append to the string
+								foreach ($item->terms['category'] as $index => $category) {
+									$category_names .= $category['name'];
+
+									// add a comma if it's not the last category
+									if ($index < $total_categories - 1) {
+										$category_names .= ', ';
+									}
+								}
+
+								// output the concatenated string
+								echo $category_names;
+							} else {
+								echo __('No categories found for this post.');
+							}
+						}
+
+						// output for post excerpt column
+						if ($column_name == 'post-excerpt') {
+
+							if (isset($item->post_excerpt)) {
+								// access the 'post_excerpt' of WP_Post object
+								$post_excerpt = $item->post_excerpt;
+
+								// display post excerpt
+								echo $post_excerpt;
+							} else {
+								echo 'No post excerpt found for this post.';
+							}
+						}
+					}
+				} else {
+					// debugging: Output a message for posts without 'dt_original_post_id' meta key
+					echo 'Debug - New post ID not found or not a draft.<br>';
 				}
+
+				return $item;  // ensure to return $item after processing
 			}
 
-			// output the concatenated string
-			echo $category_names;
+			// add the custom function to the dt_pull_list_table_custom_column action
+			add_action('dt_pull_list_table_custom_column', 'dt_pull_post_data', 10, 2);
 		} else {
-			echo __('No categories found for this post.');
+			echo 'Distributor\PullListTable class not found.';
 		}
 	}
-
-	return $item;
-}
-
-/**
- * Display author nickname for each post.
- * 
- */
-
-add_action('dt_pull_list_table_custom_column', 'dt_pull_post_author_nickname', 10, 2);
-
-function dt_pull_post_author_nickname($column_name, $item)
-{
-	if ($column_name == 'author') {
-		// check if the 'author_nickname' meta key exists in the item's meta data.
-		if (isset($item->meta['author_nickname'])) {
-			// output author nickname
-			echo $item->meta['author_nickname'];
-		} else {
-			echo 'No author found for this post.';
-		}
-	}
-
-	return $item;
-}
-
-/**
- * Display post tags for each post.
- * 
- */
-
-add_action('dt_pull_list_table_custom_column', 'dt_pull_post_tags', 10, 2);
-
-function dt_pull_post_tags($column_name, $item)
-{
-	if ($column_name == 'tags') {
-		if (isset($item->terms['post_tag']) && is_array($item->terms['post_tag'])) {
-			// initialize an empty string to store tag names
-			$tag_names = '';
-
-			// get the total number of tags
-			$total_tags = count($item->terms['post_tag']);
-
-			// loop through each tag and append to the string
-			foreach ($item->terms['post_tag'] as $index => $tag) {
-				$tag_names .= $tag['name'];
-
-				// add a comma if it's not the last tag
-				if ($index < $total_tags - 1) {
-					$tag_names .= ', ';
-				}
-			}
-
-			// output the concatenated string
-			echo $tag_names;
-		} else {
-			echo __('No tags found for this post.');
-		}
-	}
-
-	return $item;
-}
-
-/**
- * Display post excerpt for each post.
- * 
- */
-
-add_action('dt_pull_list_table_custom_column', 'dt_pull_post_excerpt', 10, 2);
-
-function dt_pull_post_excerpt($column_name, $item)
-{
-
-	if ($column_name == 'post-excerpt') {
-
-		if (isset($item->post_excerpt)) {
-			// access the 'post_excerpt' of WP_Post object
-			$post_excerpt = $item->post_excerpt;
-
-			// display post excerpt
-			echo $post_excerpt;
-		} else {
-			echo 'No post excerpt found for this post.';
-		}
-	}
-
-	return $item;
 }
 
 /**

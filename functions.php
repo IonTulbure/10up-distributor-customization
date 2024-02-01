@@ -318,7 +318,6 @@ function post_column_func_header($columns)
 
 add_action('admin_print_styles-distributor_page_pull', function () {
 	echo '<style> .column-dt-post-type { width: 150px !important; }</style>';
-	echo '<style> .column-post_type { width: 100px !important; }</style>';
 	echo '<style> .column-date-time { width: 150px !important; }</style>';
 	echo '<style> .column-author { width: 120px !important; }</style>';
 	echo '<style> .column-tags { width: 120px !important; }</style>';

@@ -324,6 +324,28 @@ add_action('admin_print_styles-distributor_page_pull', function () {
 });
 
 /**
+ * Display post type for each post.
+ * 
+ */
+
+add_action('dt_pull_list_table_custom_column', 'dt_pull_post_dt_post_type', 10, 2);
+
+function dt_pull_post_dt_post_type($column_name, $item)
+{
+
+	if ($column_name == 'dt-post-type') {
+		if (isset($item->post_type)) {
+			// display post_type name
+			echo ucwords($item->post_type);
+		} else {
+			_e('No post type found for this post.');
+		}
+	}
+
+	return $item;
+}
+
+/**
  * Display date and time gmt for each post.
  * 
  */

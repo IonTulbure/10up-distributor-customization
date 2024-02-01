@@ -280,9 +280,9 @@ add_filter('dt_pull_list_table_columns', 'post_column_unset_columns', 10, 1);
 
 function post_column_unset_columns($columns)
 {
-	if (is_array($columns) && isset($columns['date'])) {
+	if (is_array($columns) && isset($columns['date'], $columns['post_type'])) {
 		unset($columns['date']);
-		unset($columns['post-type']);
+		unset($columns['post_type']);
 	}
 
 	return $columns;

@@ -359,7 +359,10 @@ function dt_pull_post_publish_date_time_gmt($column_name, $item)
 		_e('Published:');
 
 		if (isset($item->post_date_gmt)) {
+			// display post date GMT
 			echo '<br>' . $item->post_date_gmt;
+		} else {
+			_e('No post date found for this post.');
 		}
 	}
 

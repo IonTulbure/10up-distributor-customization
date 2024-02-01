@@ -282,6 +282,7 @@ function post_column_unset_columns($columns)
 {
 	if (is_array($columns) && isset($columns['date'])) {
 		unset($columns['date']);
+		unset($columns['post-type']);
 	}
 
 	return $columns;

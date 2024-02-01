@@ -272,7 +272,7 @@ function update_post_category_on_save($post_id, $post)
 }
 
 /**
- * Unset default date & post_type columns.
+ * Unset default name, date, post_type columns.
  * 
  */
 
@@ -280,9 +280,17 @@ add_filter('dt_pull_list_table_columns', 'post_column_unset_columns', 10, 1);
 
 function post_column_unset_columns($columns)
 {
+	// unset default date & post_type columns
 	if (is_array($columns) && isset($columns['date'], $columns['post_type'])) {
 		unset($columns['date']);
 		unset($columns['post_type']);
+	}
+
+	// unset default name column only for the status=pulled page
+	if (isset($_GET['page']) && $_GET['page'] === 'pull' && isset($_GET['status']) && $_GET['status'] === 'pulled') {
+		if (is_array($columns) && isset($columns['name'])) {
+			unset($columns['name']);
+		}
 	}
 
 	return $columns;

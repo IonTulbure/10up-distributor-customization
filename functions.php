@@ -530,3 +530,36 @@ function add_author_nickname_to_prepared_meta($prepared_meta, $post_id)
 
 	return $prepared_meta;
 }
+
+/**
+ * Add a new class to the rows containing published posts.
+ * 
+ */
+
+function custom_pull_list_table_tr_class($class, $item)
+{
+	global $wpdb;
+
+	// Use a direct SQL query to find the new post ID
+	$new_post_id = $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT post_id FROM $wpdb->postmeta WHERE meta_key = 'dt_original_post_id' AND meta_value = %d",
+			$item->ID
+		)
+	);
+
+	if ($new_post_id) {
+		// Retrieve post data from wp_posts table for the new post
+		$new_post_data = get_post($new_post_id);
+
+		// Check if the post status is 'publish'
+		if ($new_post_data->post_status === 'publish') {
+			$class .=  'published-post';
+		}
+	}
+
+	return $class . ' '; // Ensure there's a space before appending the new class
+}
+
+// Add the custom function to the dt_pull_list_table_tr_class filter
+add_filter('dt_pull_list_table_tr_class', 'custom_pull_list_table_tr_class', 10, 2);

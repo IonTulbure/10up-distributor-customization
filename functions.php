@@ -272,7 +272,7 @@ function update_post_category_on_save($post_id, $post)
 }
 
 /**
- * Unset default date column.
+ * Unset default date & post_type columns.
  * 
  */
 

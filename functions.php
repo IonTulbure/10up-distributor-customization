@@ -290,7 +290,7 @@ function post_column_unset_columns($columns)
 
 /**
  * Filter pull posts column.
- * Adds 4 new columns to the Pull post table.
+ * Adds new columns to the Distributor post table.
  * 
  */
 

@@ -305,10 +305,16 @@ function post_column_unset_columns($columns)
 add_filter('dt_pull_list_table_columns', 'post_column_func_header', 10, 1);
 
 function post_column_func_header($columns)
-{
+{	
+	// initialize dt-post-name only for the status=pulled page
+	if (isset($_GET['page']) && $_GET['page'] === 'pull' && isset($_GET['status']) && $_GET['status'] === 'pulled') {
+		if (is_array($columns) && !isset($columns['dt-post-name'])) {
+			$columns['dt-post-name'] = __('Name');
+		}
+	}
 
-	if (is_array($columns) && !isset($columns['dt-post-name'], $columns['dt-post-type'], $columns['date-time'], $columns['author'], $columns['tags'], $columns['categories'], $columns['post-excerpt'])) {
-		$columns['dt-post-name'] = __('Name');
+	// initialize the rest of columns normally
+	if (is_array($columns) && !isset($columns['dt-post-type'], $columns['date-time'], $columns['author'], $columns['tags'], $columns['categories'], $columns['post-excerpt'])) {
 		$columns['dt-post-type'] = __('Post Type');
 		$columns['date-time'] = __('Date & Time');
 		$columns['author'] = __('Author');

@@ -563,3 +563,37 @@ function custom_pull_list_table_tr_class($class, $item)
 
 // Add the custom function to the dt_pull_list_table_tr_class filter
 add_filter('dt_pull_list_table_tr_class', 'custom_pull_list_table_tr_class', 10, 2);
+
+/**
+ * Adds js code to remove table rows with class dt-table-rowpublished-post.
+ * 
+ */
+
+function remove_pulled_publish_post_row()
+{
+	// Check if it's the desired admin page
+	if (isset($_GET['page']) && $_GET['page'] === 'pull' && isset($_GET['status']) && $_GET['status'] === 'pulled') {
+?>
+		<script>
+			// wait for the DOM to be fully loaded
+			document.addEventListener('DOMContentLoaded', function() {
+
+				// find the table with class distributor_page_pull
+				var table = document.querySelector('.distributor_page_pull');
+
+				if (table) {
+					// if the table is found, find and remove rows with class .dt-table-rowpublished-post
+					var rowsToRemove = table.querySelectorAll('.dt-table-rowpublished-post');
+
+					rowsToRemove.forEach(function(row) {
+						row.parentNode.removeChild(row);
+					});
+				}
+			});
+		</script>
+<?php
+	}
+}
+
+// Add the custom JavaScript to the admin page
+add_action('admin_footer', 'remove_pulled_publish_post_row');

@@ -391,7 +391,9 @@ function dt_pulled_posts_remove_published_posts()
 
 							// display link to edit post
 							$edit_post_link = get_edit_post_link($new_post_id);
-							echo '<strong>Edit Post:</strong> <a href="' . esc_url($edit_post_link) . '">Edit Post</a><br>';
+
+							// markup for the edit post link
+							echo '<span class="edit">' . '<a href="' . esc_url($edit_post_link) . '">' . __("Edit") . '</a>' . ' | </span>';
 
 							// display link to view post
 							$view_post_link = get_permalink($new_post_id);

@@ -386,7 +386,7 @@ function dt_pulled_posts_remove_published_posts()
 							// display post name
 							echo '<strong>' . esc_html($new_post_data->post_title) . '</strong>' . '<br>';
 
-							// .row-actions wrapper
+							// .row-actions wrapper start
 							echo '<div class="row-actions">';
 
 							// display link to edit post
@@ -397,7 +397,11 @@ function dt_pulled_posts_remove_published_posts()
 
 							// display link to view post
 							$view_post_link = get_permalink($new_post_id);
-							echo '<strong>View Post:</strong> <a href="' . esc_url($view_post_link) . '">View Post</a><br>';
+
+							// markup for the view post link
+							echo '<span class="view">' . '<a href="' . esc_url($view_post_link) . '">' . __("View") . '</a>' . '</span>';
+
+							// .row-actions wrapper start
 							echo '</div>';
 						}
 

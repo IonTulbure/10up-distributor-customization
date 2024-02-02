@@ -249,25 +249,27 @@ function client_prefix_auto_unlink_distributed_posts($meta, $existing_meta, $pos
 }
 
 /**
- * Change post category on publishing.
- * Assigns posts to the default category.
+ * Change post category on dt_pull_post action.
  * Checks if post has dt_original_post_id meta key.
+ * Assigns posts to the default category if category differs.
  * 
  */
-add_action('save_post', 'update_post_category_on_save', 10, 2);
 
-function update_post_category_on_save($post_id, $post)
-{
-	// get the default category
+add_action('dt_pull_post', 'default_cat_pulled_posts', 10, 2); 
+
+function default_cat_pulled_posts($new_post_id, $post_array) {
+	// get the current site default category
 	$default_category = get_option('default_category');
-	$post_categories = wp_get_post_categories($post_id);
+
+	// get remote post categories
+	$post_categories = wp_get_post_categories($new_post_id);
 
 	// check if post has meta key added by Distributor plugin
-	$distributor_meta_key = get_post_meta($post_id, 'dt_original_post_id', true);
+	$distributor_meta_key = get_post_meta($new_post_id, 'dt_original_post_id', true);
 
 	if ($distributor_meta_key && !in_array($default_category, $post_categories)) {
 		// assign the post to the default category
-		wp_set_post_categories($post_id, array($default_category));
+		wp_set_post_categories($new_post_id, array($default_category));
 	}
 }
 

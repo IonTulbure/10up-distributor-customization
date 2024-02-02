@@ -351,7 +351,7 @@ add_action('admin_init', 'dt_pulled_posts_remove_published_posts');
 
 function dt_pulled_posts_remove_published_posts()
 {
-	// check if it's the desired admin page
+	// // check if ?page=pull is set & status is pulled
 	if (isset($_GET['page']) && $_GET['page'] === 'pull' && isset($_GET['status']) && $_GET['status'] === 'pulled') {
 		// load WordPress environment
 		include_once($_SERVER['DOCUMENT_ROOT'] . '/wp-load.php');
@@ -522,8 +522,11 @@ function dt_pulled_posts_remove_published_posts()
 			_e('Distributor\PullListTable class not found.');
 		}
 	} elseif (
+		// check if ?page=pull is set & status is empty
 		(isset($_GET['page']) && $_GET['page'] === 'pull' && empty($_GET['status'])) ||
+		// check if ?page=pull is set & status is new
 		(isset($_GET['page']) && $_GET['page'] === 'pull' && isset($_GET['status']) && $_GET['status'] === 'new') ||
+		// check if ?page=pull is set & status is skipped
 		(isset($_GET['page']) && $_GET['page'] === 'pull' && isset($_GET['status']) && $_GET['status'] === 'skipped')
 	) {
 		// display column for status pages new & skipped

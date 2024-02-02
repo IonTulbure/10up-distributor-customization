@@ -507,6 +507,118 @@ function dt_pulled_posts_remove_published_posts()
 		} else {
 			_e('Distributor\PullListTable class not found.');
 		}
+	} elseif ((isset($_GET['page']) && $_GET['page'] === 'pull' && isset($_GET['status']) && $_GET['status'] === 'new') ||  (isset($_GET['page']) && $_GET['page'] === 'pull' && isset($_GET['status']) && $_GET['status'] === 'skipped')) {
+		// display column for status pages new & skipped
+
+		// eefine the custom function for dt_pull_list_table_custom_column action
+		function dt_pull_post_data_new_skipped($column_name, $item)
+		{
+
+			// output for post type column
+			if ($column_name == 'dt-post-type') {
+				if (isset($item->post_type)) {
+					// display post_type name
+					echo ucwords($item->post_type);
+				} else {
+					_e('No post type found for this post.');
+				}
+			}
+
+			// output for date time column
+			if ($column_name == 'date-time') {
+				_e('Published:');
+
+				if (isset($item->post_date_gmt)) {
+					// display post date GMT
+					echo '<br>' . $item->post_date_gmt;
+				} else {
+					_e('No post date found for this post.');
+				}
+			}
+
+			// output for author column
+			if ($column_name == 'author') {
+				// check if the 'author_nickname' meta key exists in the item's meta data.
+				if (isset($item->meta['author_nickname'])) {
+					// output author nickname
+					echo $item->meta['author_nickname'];
+				} else {
+					_e('No author found for this post.');
+				}
+			}
+
+			// output for tags column
+			if ($column_name == 'tags') {
+				if (isset($item->terms['post_tag']) && is_array($item->terms['post_tag'])) {
+					// initialize an empty string to store tag names
+					$tag_names = '';
+
+					// get the total number of tags
+					$total_tags = count($item->terms['post_tag']);
+
+					// loop through each tag and append to the string
+					foreach ($item->terms['post_tag'] as $index => $tag) {
+						$tag_names .= $tag['name'];
+
+						// add a comma if it's not the last tag
+						if ($index < $total_tags - 1) {
+							$tag_names .= ', ';
+						}
+					}
+
+					// output the concatenated string
+					echo $tag_names;
+				} else {
+					_e('No tags found for this post.');
+				}
+			}
+
+			// output for categories column
+			if ($column_name == 'categories') {
+
+				if (isset($item->terms['category']) && is_array($item->terms['category'])) {
+					// initialize an empty string to store category names
+					$category_names = '';
+
+					// get the total number of categories
+					$total_categories = count($item->terms['category']);
+
+					// loop through each category and append to the string
+					foreach ($item->terms['category'] as $index => $category) {
+						$category_names .= $category['name'];
+
+						// add a comma if it's not the last category
+						if ($index < $total_categories - 1) {
+							$category_names .= ', ';
+						}
+					}
+
+					// output the concatenated string
+					echo $category_names;
+				} else {
+					_e('No categories found for this post.');
+				}
+			}
+
+			// output for post excerpt column
+			if ($column_name == 'post-excerpt') {
+
+				if (isset($item->post_excerpt)) {
+					// access the 'post_excerpt' of WP_Post object
+					$post_excerpt = $item->post_excerpt;
+
+					// display post excerpt
+					echo $post_excerpt;
+				} else {
+					_e('No post excerpt found for this post.');
+				}
+			}
+
+			return $item; // return $item after processing
+		}
+
+		// add the custom function to the dt_pull_list_table_custom_column action
+		add_action('dt_pull_list_table_custom_column', 'dt_pull_post_data_new_skipped', 10, 2);
 	}
 }
 

@@ -496,7 +496,7 @@ function dt_pulled_posts_remove_published_posts()
 					}
 				} else {
 					// debugging: Output a message for posts without 'dt_original_post_id' meta key
-					_e('Debug - New post ID not found or not a draft.<br>');
+					echo 'Debug - New post ID not found or not a draft.<br>';
 				}
 
 				return $item;  // ensure to return $item after processing

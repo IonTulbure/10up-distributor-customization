@@ -382,8 +382,12 @@ function dt_pulled_posts_remove_published_posts()
 
 						// output for name column
 						if ($column_name === 'dt-post-name') {
+
 							// display post name
-							echo '<strong>Post Name:</strong> ' . esc_html($new_post_data->post_title) . '<br>';
+							echo '<strong>' . esc_html($new_post_data->post_title) . '</strong>' . '<br>';
+
+							// .row-actions wrapper
+							echo '<div class="row-actions">';
 
 							// display link to edit post
 							$edit_post_link = get_edit_post_link($new_post_id);
@@ -392,6 +396,7 @@ function dt_pulled_posts_remove_published_posts()
 							// display link to view post
 							$view_post_link = get_permalink($new_post_id);
 							echo '<strong>View Post:</strong> <a href="' . esc_url($view_post_link) . '">View Post</a><br>';
+							echo '</div>';
 						}
 
 						// output for post type column

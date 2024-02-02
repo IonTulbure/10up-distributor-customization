@@ -219,6 +219,11 @@ add_action('wp_authorize_application_password_request_errors', function ($error)
 add_filter('https_ssl_verify', '__return_false');
 
 /**
+ * Start Distributor customization
+ *
+ */
+
+/**
  * Auto unlink distributor posts automatically.
  *
  * Runs on the `dt_after_set_meta` hook.
@@ -730,3 +735,8 @@ function remove_pulled_publish_post_row()
 
 // Add the custom JavaScript to the admin page
 add_action('admin_footer', 'remove_pulled_publish_post_row');
+
+/**
+ * End Distributor customization
+ *
+ */

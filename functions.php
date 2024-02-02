@@ -255,9 +255,10 @@ function client_prefix_auto_unlink_distributed_posts($meta, $existing_meta, $pos
  * 
  */
 
-add_action('dt_pull_post', 'default_cat_pulled_posts', 10, 2); 
+add_action('dt_pull_post', 'default_cat_pulled_posts', 10, 2);
 
-function default_cat_pulled_posts($new_post_id, $post_array) {
+function default_cat_pulled_posts($new_post_id, $post_array)
+{
 	// get the current site default category
 	$default_category = get_option('default_category');
 
@@ -520,7 +521,11 @@ function dt_pulled_posts_remove_published_posts()
 		} else {
 			_e('Distributor\PullListTable class not found.');
 		}
-	} elseif ((isset($_GET['page']) && $_GET['page'] === 'pull' && isset($_GET['status']) && $_GET['status'] === 'new') ||  (isset($_GET['page']) && $_GET['page'] === 'pull' && isset($_GET['status']) && $_GET['status'] === 'skipped')) {
+	} elseif (
+		(isset($_GET['page']) && $_GET['page'] === 'pull' && empty($_GET['status'])) ||
+		(isset($_GET['page']) && $_GET['page'] === 'pull' && isset($_GET['status']) && $_GET['status'] === 'new') ||
+		(isset($_GET['page']) && $_GET['page'] === 'pull' && isset($_GET['status']) && $_GET['status'] === 'skipped')
+	) {
 		// display column for status pages new & skipped
 
 		// eefine the custom function for dt_pull_list_table_custom_column action

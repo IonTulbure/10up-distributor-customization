@@ -423,7 +423,7 @@ function dt_pulled_posts_remove_published_posts()
 								// output author nickname
 								echo $item->meta['author_nickname'];
 							} else {
-								echo 'No author found for this post.';
+								_e('No author found for this post.');
 							}
 						}
 
@@ -449,7 +449,7 @@ function dt_pulled_posts_remove_published_posts()
 								// output the concatenated string
 								echo $tag_names;
 							} else {
-								echo __('No tags found for this post.');
+								_e('No tags found for this post.');
 							}
 						}
 
@@ -476,7 +476,7 @@ function dt_pulled_posts_remove_published_posts()
 								// output the concatenated string
 								echo $category_names;
 							} else {
-								echo __('No categories found for this post.');
+								_e('No categories found for this post.');
 							}
 						}
 
@@ -490,13 +490,13 @@ function dt_pulled_posts_remove_published_posts()
 								// display post excerpt
 								echo $post_excerpt;
 							} else {
-								echo 'No post excerpt found for this post.';
+								_e('No post excerpt found for this post.');
 							}
 						}
 					}
 				} else {
 					// debugging: Output a message for posts without 'dt_original_post_id' meta key
-					echo 'Debug - New post ID not found or not a draft.<br>';
+					_e('Debug - New post ID not found or not a draft.<br>');
 				}
 
 				return $item;  // ensure to return $item after processing
@@ -505,7 +505,7 @@ function dt_pulled_posts_remove_published_posts()
 			// add the custom function to the dt_pull_list_table_custom_column action
 			add_action('dt_pull_list_table_custom_column', 'dt_pull_post_data', 10, 2);
 		} else {
-			echo 'Distributor\PullListTable class not found.';
+			_e('Distributor\PullListTable class not found.');
 		}
 	}
 }

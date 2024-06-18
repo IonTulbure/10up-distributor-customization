@@ -280,6 +280,38 @@ function default_cat_pulled_posts($new_post_id, $post_array)
 }
 
 /**
+ * Filter out shortcode content when posts are pulled.
+ * 
+ */
+
+add_filter('dt_pull_post_args', 'modify_pulled_post_content');
+
+function modify_pulled_post_content($post_args)
+{
+	// define a function to remove content inside custom HTML tags
+	function remove_custom_tags($content)
+	{
+		// define the custom tags you want to remove content from
+		$tags = array('shortcode');
+
+		foreach ($tags as $tag) {
+			// regular expression to match and remove content inside the custom tags
+			$pattern = "/<\s*$tag\b[^>]*>.*?<\s*\/\s*$tag\s*>/is";
+			$content = preg_replace($pattern, '', $content);
+		}
+
+		return $content;
+	}
+
+	// modify the post content by removing custom tags
+	if (isset($post_args['post_content'])) {
+		$post_args['post_content'] = remove_custom_tags($post_args['post_content']);
+	}
+
+	return $post_args;
+}
+
+/**
  * Unset default name, date, post_type columns.
  * 
  */
